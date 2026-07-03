@@ -1,0 +1,11 @@
+.DS_Store
+src/
+site/
+test/
+.github/
+.npm-cache/
+PRODUCT.md
+tmp/
+tsconfig.json
+.gitignore
+*.tgz
