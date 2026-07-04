@@ -4,4 +4,5 @@ node_modules/
 dist/
 dist-site/
 tmp/
+videos/
 *.tgz

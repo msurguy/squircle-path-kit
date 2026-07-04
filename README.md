@@ -14,10 +14,77 @@ Unlike rectangle-only libraries, this one handles **any closed polygon** —
 triangles, hexagons, stars, arrows, custom shapes — with a different radius
 and smoothing value per corner if you want.
 
+## Preview
+
+<video src="./docs/assets/squircle-path-kit-promo.mp4" controls muted playsinline width="100%"></video>
+
+[Open the promo video](./docs/assets/squircle-path-kit-promo.mp4)
+
 ## Install
 
 ```bash
 npm install @msurguy/squircle-path-kit
+```
+
+## Representative use cases
+
+All snippets assume:
+
+```ts
+import { getSquirclePath, getSquircleRectPath } from "@msurguy/squircle-path-kit";
+```
+
+### Figma-smooth SVG rectangles
+
+![Figma-smooth rectangle generated with squircle-path-kit](./docs/assets/readme-figma-rectangles.svg)
+
+```ts
+const d = getSquircleRectPath({
+  width: 320,
+  height: 180,
+  cornerRadius: 48,
+  cornerSmoothing: 0.68,
+});
+```
+
+### Per-corner radii
+
+![Per-corner radii generated with squircle-path-kit](./docs/assets/readme-per-corner.svg)
+
+```ts
+const d = getSquircleRectPath({
+  width: 320,
+  height: 180,
+  topLeftRadius: 12,
+  topRightRadius: 64,
+  bottomRightRadius: 36,
+  bottomLeftRadius: 0,
+  cornerSmoothing: 0.72,
+});
+```
+
+### Arbitrary polygons
+
+![Arbitrary polygon generated with squircle-path-kit](./docs/assets/readme-arbitrary-polygons.svg)
+
+```ts
+const d = getSquirclePath(points, {
+  defaultRadius: 24,
+  defaultSmoothness: 0.7,
+});
+```
+
+### CSS and image clipping
+
+![CSS clipping generated with squircle-path-kit](./docs/assets/readme-css-clipping.svg)
+
+```ts
+element.style.clipPath = `path('${getSquircleRectPath({
+  width,
+  height,
+  cornerRadius: 24,
+  cornerSmoothing: 0.8,
+})}')`;
 ```
 
 ## Usage

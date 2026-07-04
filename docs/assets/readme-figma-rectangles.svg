@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Figma-smooth rectangles</title>
+  <desc id="desc">Rectangle paths with radius and cornerSmoothing</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#17212f" flood-opacity="0.18"/>
+    </filter>
+    <linearGradient id="rectGradient" x1="372" y1="228" x2="908" y2="544" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f04438"/>
+      <stop offset="0.52" stop-color="#f79009"/>
+      <stop offset="1" stop-color="#12b76a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#f7f8fb"/>
+  <rect x="54" y="54" width="1172" height="612" rx="34" fill="#ffffff" stroke="#dce2eb"/>
+  <text x="96" y="124" fill="#17212f" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="44" font-weight="760">Figma-smooth rectangles</text>
+  <text x="96" y="171" fill="#667085" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="24">Rectangle paths with radius and cornerSmoothing</text>
+  
+  <path d="M 468 228 H 812 C 865.02 228 908 270.98 908 324 V 448 C 908 501.02 865.02 544 812 544 H 468 C 414.98 544 372 501.02 372 448 V 324 C 372 270.98 414.98 228 468 228 Z" fill="none" stroke="#98a2b3" stroke-width="8" stroke-dasharray="18 18"/>
+  <path d="M 530 228 H 750 C 807.92 228 836.88 228 858.63 240.09 C 874.3 248.79 887.21 261.7 895.91 277.37 C 908 299.12 908 328.08 908 386 H 908 C 908 443.92 908 472.88 895.91 494.63 C 887.21 510.3 874.3 523.21 858.63 531.91 C 836.88 544 807.92 544 750 544 H 530 C 472.08 544 443.12 544 421.37 531.91 C 405.7 523.21 392.79 510.3 384.09 494.63 C 372 472.88 372 443.92 372 386 H 372 C 372 328.08 372 299.12 384.09 277.37 C 392.79 261.7 405.7 248.79 421.37 240.09 C 443.12 228 472.08 228 530 228 Z" fill="url(#rectGradient)" filter="url(#shadow)"/>
+  <path d="M 530 228 H 750 C 807.92 228 836.88 228 858.63 240.09 C 874.3 248.79 887.21 261.7 895.91 277.37 C 908 299.12 908 328.08 908 386 H 908 C 908 443.92 908 472.88 895.91 494.63 C 887.21 510.3 874.3 523.21 858.63 531.91 C 836.88 544 807.92 544 750 544 H 530 C 472.08 544 443.12 544 421.37 531.91 C 405.7 523.21 392.79 510.3 384.09 494.63 C 372 472.88 372 443.92 372 386 H 372 C 372 328.08 372 299.12 384.09 277.37 C 392.79 261.7 405.7 248.79 421.37 240.09 C 443.12 228 472.08 228 530 228 Z" fill="none" stroke="#101828" stroke-opacity="0.1" stroke-width="4"/>
+  <circle cx="372" cy="228" r="7" fill="#12b76a"/>
+  <circle cx="908" cy="228" r="7" fill="#12b76a"/>
+  <circle cx="908" cy="544" r="7" fill="#12b76a"/>
+  <circle cx="372" cy="544" r="7" fill="#12b76a"/>
+  <text x="438" y="397" fill="#ffffff" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="34" font-weight="760">cornerRadius: 96</text>
+  <text x="438" y="441" fill="#e6fff5" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="28">cornerSmoothing: 0.68</text>
+
+</svg>
