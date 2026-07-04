@@ -16,7 +16,7 @@ and smoothing value per corner if you want.
 
 ## Preview
 
-<video src="https://github.com/msurguy/squircle-path-kit/raw/refs/heads/main/docs/assets/squircle-path-kit-promo.mp4" controls muted playsinline width="100%"></video>
+<video src="https://raw.githubusercontent.com/msurguy/squircle-path-kit/refs/heads/main/docs/assets/squircle-path-kit-promo.mp4" controls muted playsinline width="100%"></video>
 
 ## Install
 
