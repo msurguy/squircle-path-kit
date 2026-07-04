@@ -3,7 +3,7 @@
 Figma-exact SVG squircle paths — corner rounding **and** corner smoothing for
 rectangles and arbitrary polygons.
 
-Interactive examples and code snippets: https://msurguy.github.io/squircle-path-kit/
+Interactive examples and code snippets: <https://msurguy.github.io/squircle-path-kit/>
 
 The construction was reverse-engineered from ground-truth SVG exports produced
 by Figma itself and is verified in the test suite to match Figma's output
@@ -16,7 +16,7 @@ and smoothing value per corner if you want.
 
 ## Preview
 
-<video src="https://github.com/msurguy/squircle-path-kit/raw/main/docs/assets/squircle-path-kit-promo.mp4" controls muted playsinline width="100%"></video>
+<video src="https://github.com/msurguy/squircle-path-kit/raw/refs/heads/main/docs/assets/squircle-path-kit-promo.mp4" controls muted playsinline width="100%"></video>
 
 ## Install
 
@@ -29,7 +29,10 @@ npm install @msurguy/squircle-path-kit
 All snippets assume:
 
 ```ts
-import { getSquirclePath, getSquircleRectPath } from "@msurguy/squircle-path-kit";
+import {
+  getSquirclePath,
+  getSquircleRectPath,
+} from "@msurguy/squircle-path-kit";
 ```
 
 ### Figma-smooth SVG rectangles
@@ -106,8 +109,10 @@ Per-corner radii, offsets, and precision are supported:
 
 ```ts
 getSquircleRectPath({
-  x: 10, y: 10,
-  width: 240, height: 240,
+  x: 10,
+  y: 10,
+  width: 240,
+  height: 240,
   topLeftRadius: 10,
   topRightRadius: 40,
   bottomRightRadius: 80,
@@ -134,12 +139,15 @@ const d = getSquirclePath(pts, { defaultRadius: 40, defaultSmoothness: 0.6 });
 Each point can override radius and smoothing:
 
 ```ts
-getSquirclePath([
-  { x: 0,   y: 0,   radius: 10, smoothness: 1.0 },
-  { x: 240, y: 0,   radius: 40 },                  // uses defaults below
-  { x: 240, y: 240, radius: 80, smoothness: 0.3 },
-  { x: 0,   y: 240 },                              // radius 0 -> sharp corner
-], { defaultRadius: 20, defaultSmoothness: 0.6 });
+getSquirclePath(
+  [
+    { x: 0, y: 0, radius: 10, smoothness: 1.0 },
+    { x: 240, y: 0, radius: 40 }, // uses defaults below
+    { x: 240, y: 240, radius: 80, smoothness: 0.3 },
+    { x: 0, y: 240 }, // radius 0 -> sharp corner
+  ],
+  { defaultRadius: 20, defaultSmoothness: 0.6 },
+);
 ```
 
 ### React example
@@ -147,8 +155,10 @@ getSquirclePath([
 ```tsx
 function Squircle({ size = 200, radius = 40, smoothing = 0.6 }) {
   const d = getSquircleRectPath({
-    width: size, height: size,
-    cornerRadius: radius, cornerSmoothing: smoothing,
+    width: size,
+    height: size,
+    cornerRadius: radius,
+    cornerSmoothing: smoothing,
   });
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
@@ -204,12 +214,12 @@ element.style.clipPath = `path('${getSquircleRectPath({ width, height, cornerRad
 
 ### `getSquirclePath(points, options?)`
 
-| Param | Type | Description |
-|---|---|---|
-| `points` | `SquirclePoint[]` | ≥3 vertices of a closed polygon (`Z` is appended). Each: `{ x, y, radius?, smoothness? }` |
-| `options.defaultRadius` | `number` | Radius for points without their own. Default `0`. |
-| `options.defaultSmoothness` | `number` | Smoothing ξ ∈ [0,1] for points without their own. Default `0`. |
-| `options.precision` | `number` | Output decimal places. Default `2`. |
+| Param                       | Type              | Description                                                                               |
+| --------------------------- | ----------------- | ----------------------------------------------------------------------------------------- |
+| `points`                    | `SquirclePoint[]` | ≥3 vertices of a closed polygon (`Z` is appended). Each: `{ x, y, radius?, smoothness? }` |
+| `options.defaultRadius`     | `number`          | Radius for points without their own. Default `0`.                                         |
+| `options.defaultSmoothness` | `number`          | Smoothing ξ ∈ [0,1] for points without their own. Default `0`.                            |
+| `options.precision`         | `number`          | Output decimal places. Default `2`.                                                       |
 
 Returns the SVG path `d` string.
 
