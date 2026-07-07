@@ -96,7 +96,12 @@ interface Cubic {
   end: Vec;
 }
 
-function arcToBezier(center: Vec, radius: number, startAngle: number, sweep: number): Cubic[] {
+function arcToBezier(
+  center: Vec,
+  radius: number,
+  startAngle: number,
+  sweep: number,
+): Cubic[] {
   if (Math.abs(sweep) < 1e-10) return [];
 
   const maxSweep = Math.PI / 2;
@@ -159,7 +164,7 @@ function computeCorner(
   next: Vec,
   radius: number,
   smoothness: number,
-  budget: number
+  budget: number,
 ): Corner {
   const dirIn = norm(sub(prev, curr));
   const dirOut = norm(sub(next, curr));
@@ -248,8 +253,14 @@ function computeCorner(
       ? arcToBezier(center, effectiveRadius, rStart, reducedSweep)
       : [];
 
-  const arcStartPt = add(center, vec(Math.cos(rStart) * effectiveRadius, Math.sin(rStart) * effectiveRadius));
-  const arcEndPt = add(center, vec(Math.cos(rEnd) * effectiveRadius, Math.sin(rEnd) * effectiveRadius));
+  const arcStartPt = add(
+    center,
+    vec(Math.cos(rStart) * effectiveRadius, Math.sin(rStart) * effectiveRadius),
+  );
+  const arcEndPt = add(
+    center,
+    vec(Math.cos(rEnd) * effectiveRadius, Math.sin(rEnd) * effectiveRadius),
+  );
 
   return {
     type: "squircle",
@@ -278,7 +289,10 @@ interface CornerBudget {
   p: number;
 }
 
-function resolveBudgets(demands: CornerBudget[], edgeLengths: number[]): number[] {
+function resolveBudgets(
+  demands: CornerBudget[],
+  edgeLengths: number[],
+): number[] {
   const n = demands.length;
   const maxP = demands.map((d) => d.p);
   const allowNext = new Array<number>(n);
@@ -321,7 +335,10 @@ function makeFmt(precision: number): (v: number) => number {
  * Figma-style corner rounding + smoothing. Each point may carry its
  * own `radius` and `smoothness`.
  */
-export function getSquirclePath(points: SquirclePoint[], options: SquircleOptions = {}): string {
+export function getSquirclePath(
+  points: SquirclePoint[],
+  options: SquircleOptions = {},
+): string {
   const { defaultRadius = 0, defaultSmoothness = 0, precision = 2 } = options;
   const n = points.length;
   if (n < 3) return "";
@@ -331,7 +348,9 @@ export function getSquirclePath(points: SquirclePoint[], options: SquircleOption
   const edgeLengths: number[] = [];
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    edgeLengths.push(len(sub(vec(points[j].x, points[j].y), vec(points[i].x, points[i].y))));
+    edgeLengths.push(
+      len(sub(vec(points[j].x, points[j].y), vec(points[i].x, points[i].y))),
+    );
   }
 
   // Per-corner demand
@@ -344,7 +363,10 @@ export function getSquirclePath(points: SquirclePoint[], options: SquircleOption
     const halfPhi = Math.acos(d) / 2;
     const tanHalf = Math.tan(halfPhi);
     const radius = pt.radius ?? defaultRadius;
-    const smoothness = Math.max(0, Math.min(1, pt.smoothness ?? defaultSmoothness));
+    const smoothness = Math.max(
+      0,
+      Math.min(1, pt.smoothness ?? defaultSmoothness),
+    );
     const q = tanHalf > 1e-9 ? radius / tanHalf : 0;
     return { q, p: (1 + smoothness) * q };
   });
@@ -360,7 +382,7 @@ export function getSquirclePath(points: SquirclePoint[], options: SquircleOption
       vec(next.x, next.y),
       pt.radius ?? defaultRadius,
       pt.smoothness ?? defaultSmoothness,
-      budgets[i]
+      budgets[i],
     );
   });
 
@@ -382,7 +404,8 @@ export function getSquirclePath(points: SquirclePoint[], options: SquircleOption
       path += ` L ${fmt(nextCorner.point.x)} ${fmt(nextCorner.point.y)}`;
     } else {
       const lineTarget = nextCorner.startPoint;
-      const currentEnd = corner.type === "sharp" ? corner.point : corner.endPoint;
+      const currentEnd =
+        corner.type === "sharp" ? corner.point : corner.endPoint;
       if (Math.abs(lineTarget.y - currentEnd.y) < 10 ** -precision / 2) {
         path += ` H ${fmt(lineTarget.x)}`;
       } else if (Math.abs(lineTarget.x - currentEnd.x) < 10 ** -precision / 2) {
@@ -408,7 +431,10 @@ export function getSquirclePath(points: SquirclePoint[], options: SquircleOption
  * Non-public helper used by the example site to draw control geometry.
  * It is intentionally not re-exported from `src/index.ts`.
  */
-export function getSquircleDebugPath(points: SquirclePoint[], options: SquircleOptions = {}) {
+export function getSquircleDebugPath(
+  points: SquirclePoint[],
+  options: SquircleOptions = {},
+) {
   const { defaultRadius = 0, defaultSmoothness = 0, precision = 2 } = options;
   const n = points.length;
   if (n < 3) return { path: "", corners: [] };
@@ -416,7 +442,9 @@ export function getSquircleDebugPath(points: SquirclePoint[], options: SquircleO
   const edgeLengths: number[] = [];
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n;
-    edgeLengths.push(len(sub(vec(points[j].x, points[j].y), vec(points[i].x, points[i].y))));
+    edgeLengths.push(
+      len(sub(vec(points[j].x, points[j].y), vec(points[i].x, points[i].y))),
+    );
   }
 
   const demands: CornerBudget[] = points.map((pt, i) => {
@@ -428,7 +456,10 @@ export function getSquircleDebugPath(points: SquirclePoint[], options: SquircleO
     const halfPhi = Math.acos(d) / 2;
     const tanHalf = Math.tan(halfPhi);
     const radius = pt.radius ?? defaultRadius;
-    const smoothness = Math.max(0, Math.min(1, pt.smoothness ?? defaultSmoothness));
+    const smoothness = Math.max(
+      0,
+      Math.min(1, pt.smoothness ?? defaultSmoothness),
+    );
     const q = tanHalf > 1e-9 ? radius / tanHalf : 0;
     return { q, p: (1 + smoothness) * q };
   });
@@ -443,7 +474,7 @@ export function getSquircleDebugPath(points: SquirclePoint[], options: SquircleO
       vec(next.x, next.y),
       pt.radius ?? defaultRadius,
       pt.smoothness ?? defaultSmoothness,
-      budgets[i]
+      budgets[i],
     );
   });
 
@@ -474,7 +505,8 @@ function buildPathFromCorners(corners: Corner[], precision: number): string {
       path += ` L ${fmt(nextCorner.point.x)} ${fmt(nextCorner.point.y)}`;
     } else {
       const lineTarget = nextCorner.startPoint;
-      const currentEnd = corner.type === "sharp" ? corner.point : corner.endPoint;
+      const currentEnd =
+        corner.type === "sharp" ? corner.point : corner.endPoint;
       if (Math.abs(lineTarget.y - currentEnd.y) < 10 ** -precision / 2) {
         path += ` H ${fmt(lineTarget.x)}`;
       } else if (Math.abs(lineTarget.x - currentEnd.x) < 10 ** -precision / 2) {
@@ -523,6 +555,6 @@ export function getSquircleRectPath(options: SquircleRectOptions): string {
       { x: x + width, y: y + height, radius: br },
       { x, y: y + height, radius: bl },
     ],
-    { defaultSmoothness: cornerSmoothing, precision }
+    { defaultSmoothness: cornerSmoothing, precision },
   );
 }

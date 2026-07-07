@@ -1,17 +1,71 @@
 import type { SquirclePoint } from "../../src";
+import type { RectState } from "./components/playground/state";
 
-export type CodeTab = "js" | "svg" | "react" | "react-native" | "css";
+export type OutTab = "path" | "js" | "react" | "css";
 
-interface SnippetInput {
-  points: SquirclePoint[];
-  path: string;
-  fillColor: string;
-  fillOpacity: number;
-  strokeWidth: number;
-  precision: number;
+export const outTabs: Array<{ id: OutTab; label: string }> = [
+  { id: "path", label: "SVG PATH" },
+  { id: "js", label: "JS" },
+  { id: "react", label: "REACT" },
+  { id: "css", label: "CSS" },
+];
+
+const FILL = "#7c3aed";
+
+function rectOptionsLiteral(rect: RectState, indent = "  ") {
+  const { width, height, cornerRadius, cornerSmoothing, corners, precision } = rect;
+  const lines = [`width: ${width},`, `height: ${height},`];
+  const perCorner = Object.values(corners).some((value) => value !== null);
+  if (perCorner) {
+    lines.push(
+      `topLeftRadius: ${corners.tl ?? cornerRadius},`,
+      `topRightRadius: ${corners.tr ?? cornerRadius},`,
+      `bottomRightRadius: ${corners.br ?? cornerRadius},`,
+      `bottomLeftRadius: ${corners.bl ?? cornerRadius},`
+    );
+  } else {
+    lines.push(`cornerRadius: ${cornerRadius},`);
+  }
+  lines.push(`cornerSmoothing: ${cornerSmoothing},`);
+  if (precision !== 2) lines.push(`precision: ${precision},`);
+  return lines.map((line) => indent + line).join("\n");
 }
 
-const pointLiteral = (points: SquirclePoint[]) =>
+export function makeRectSnippets(rect: RectState, d: string): Record<OutTab, string> {
+  const options = rectOptionsLiteral(rect);
+
+  return {
+    path: `<path d="${d}" fill="${FILL}" />`,
+
+    js: `import { getSquircleRectPath } from "@msurguy/squircle-path-kit";
+
+const d = getSquircleRectPath({
+${options}
+});`,
+
+    react: `import { getSquircleRectPath } from "@msurguy/squircle-path-kit";
+
+export function Squircle() {
+  const d = getSquircleRectPath({
+${rectOptionsLiteral(rect, "    ")}
+  });
+
+  return (
+    <svg width={${rect.width}} height={${rect.height}} viewBox="0 0 ${rect.width} ${rect.height}">
+      <path d={d} fill="currentColor" />
+    </svg>
+  );
+}`,
+
+    css: `import { getSquircleRectPath } from "@msurguy/squircle-path-kit";
+
+element.style.clipPath = \`path('\${getSquircleRectPath({
+${options}
+})}')\`;`,
+  };
+}
+
+const pointLiteral = (points: SquirclePoint[], indent = "  ") =>
   JSON.stringify(
     points.map((point) => ({
       x: Number(point.x.toFixed(2)),
@@ -21,79 +75,47 @@ const pointLiteral = (points: SquirclePoint[]) =>
     })),
     null,
     2
-  ).replace(/"([^"]+)":/g, "$1:");
+  )
+    .replace(/"([^"]+)":/g, "$1:")
+    .split("\n")
+    .map((line, index) => (index === 0 ? line : indent + line))
+    .join("\n");
 
-export function makeSnippets(input: SnippetInput): Record<CodeTab, string> {
-  const { points, path, fillColor, fillOpacity, strokeWidth, precision } = input;
-  const pointsCode = pointLiteral(points);
+export function makePolySnippets(
+  points: SquirclePoint[],
+  options: { defaultRadius: number; defaultSmoothness: number; precision: number },
+  d: string
+): Record<OutTab, string> {
+  const { defaultRadius, defaultSmoothness, precision } = options;
+  const optionsCode = `{ defaultRadius: ${defaultRadius}, defaultSmoothness: ${defaultSmoothness}, precision: ${precision} }`;
 
   return {
+    path: `<path d="${d}" fill="${FILL}" />`,
+
     js: `import { getSquirclePath } from "@msurguy/squircle-path-kit";
 
-const points = ${pointsCode};
+const points = ${pointLiteral(points, "")};
 
-const d = getSquirclePath(points, { precision: ${precision} });`,
-
-    svg: `<svg viewBox="0 0 600 440" xmlns="http://www.w3.org/2000/svg">
-  <path
-    d="${path}"
-    fill="${fillColor}"
-    fill-opacity="${fillOpacity}"
-    stroke="${fillColor}"
-    stroke-width="${strokeWidth}"
-  />
-</svg>`,
+const d = getSquirclePath(points, ${optionsCode});`,
 
     react: `import { getSquirclePath } from "@msurguy/squircle-path-kit";
 
-const points = ${pointsCode};
+const points = ${pointLiteral(points, "")};
 
 export function SquircleShape() {
-  const d = getSquirclePath(points, { precision: ${precision} });
+  const d = getSquirclePath(points, ${optionsCode});
 
   return (
-    <svg viewBox="0 0 600 440" role="img" aria-label="Smoothed custom shape">
-      <path
-        d={d}
-        fill="${fillColor}"
-        fillOpacity={${fillOpacity}}
-        stroke="${fillColor}"
-        strokeWidth={${strokeWidth}}
-      />
+    <svg viewBox="0 0 600 440">
+      <path d={d} fill="currentColor" />
     </svg>
-  );
-}`,
-
-    "react-native": `import Svg, { Defs, ClipPath, Path, Image } from "react-native-svg";
-import { getSquirclePath } from "@msurguy/squircle-path-kit";
-
-const points = ${pointsCode};
-const d = getSquirclePath(points, { precision: ${precision} });
-
-export function SquircleImage({ href }) {
-  return (
-    <Svg width={300} height={220} viewBox="0 0 600 440">
-      <Defs>
-        <ClipPath id="shape">
-          <Path d={d} />
-        </ClipPath>
-      </Defs>
-      <Image
-        href={href}
-        width={600}
-        height={440}
-        preserveAspectRatio="xMidYMid slice"
-        clipPath="url(#shape)"
-      />
-      <Path d={d} fill="none" stroke="${fillColor}" strokeWidth={${strokeWidth}} />
-    </Svg>
   );
 }`,
 
     css: `import { getSquirclePath } from "@msurguy/squircle-path-kit";
 
-const points = ${pointsCode};
-const d = getSquirclePath(points, { precision: ${precision} });
+const points = ${pointLiteral(points, "")};
+const d = getSquirclePath(points, ${optionsCode});
 
 element.style.clipPath = \`path('\${d}')\`;`,
   };
